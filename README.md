@@ -47,10 +47,10 @@ hyper_param_opts = {
 
   ```bash
    # 使用 Caltech-101 数据集从随机初始化的网络参数开始训练
-   python train.py --exp best_random --epochs 30 --batch_size 64 --lr 0.01 --step_size 30 --gamma 0.1 --weight_decay 0.0
+   python train.py --exp best_random --no-pretrain --epochs 30 --batch_size 64 --lr 0.01 --step_size 30 --gamma 0.1 --weight_decay 0.0
   ```
   
-模型训练结束后会分别生成 `best_finetune_best.pth` 和 `best_random_best.pth` 两个文件，分别是两种训练策略下保存的模型参数。同时在 `training_plots_finetune` 和 `training_plots_random` 文件夹下会生成相应的训练过程中在训练集和验证集上的 loss 曲线和accuracy 曲线, 在 `run` 文件夹下会生成对应的 TensorBoard logs.
+模型训练结束后会分别生成 `best_finetune_best.pth` 和 `best_random_best.pth` 两个文件，分别是两种训练策略下保存的模型参数。同时在 `training_plots_finetune` 和 `training_plots_random` 文件夹下会生成相应的训练过程中在训练集和验证集上的 loss 曲线和 accuracy 曲线, 在 `run` 文件夹下会生成对应的 TensorBoard logs.
 
 ## 4️⃣ 模型测试
 * 将模型权重文件下载后放于项目目录下，例如 `best_finetune_best.pth` 和 `best_random_best.pth`.
@@ -77,4 +77,4 @@ hyper_param_opts = {
   ```
 
 ## ✅ 实验结果
-最终预训练微调模型在 Caltech-101 测试集上达到了**96.33**%的准确率，而从头开始训练的模型达到了**90.23**%的准确率.
+最终预训练微调模型在 Caltech-101 测试集上达到了**96.33**%的准确率，而从头开始训练的模型达到了**70.23**%的准确率.
