@@ -59,11 +59,11 @@ hyper_param_opts = {
 
   ```python
   # 测试预训练微调的模型
-  python test.py --exp best_finetune --batch_size --64
+  python test.py --exp best_finetune --batch_size 64
   ```
    ```python
   # 测试从头开始训练的模型
-  python test.py --exp best_random --batch_size --64
+  python test.py --exp best_random --batch_size 64
   ```
   程序运行结束后会打印模型在测试集上的损失和正确率
   
