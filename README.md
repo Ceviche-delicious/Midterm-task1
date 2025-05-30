@@ -42,12 +42,12 @@ hyper_param_opts = {
 
   ```bash
   # 在 Caltech-101 数据集上从零开始训练新的输出层，并对其余参数使用较小的学习率进行微调
-  python train.py --exp best_finetune --epochs 20 --batch_size 64 --lr 0.01 --step_size 10 --gamma 0.5 --weight_decay 1e-5
+  python train.py --exp best_finetune --epochs 20 --batch_size 64 --lr 0.01 --step_size 30 --gamma 0.1 --weight_decay 0.0
   ```
 
   ```bash
    # 使用 Caltech-101 数据集从随机初始化的网络参数开始训练
-   python train.py --exp best_random --no-pretrain --epochs 30 --batch_size 64 --lr 0.01 --step_size 30 --gamma 0.1 --weight_decay 0.0
+   python train.py --exp best_random --no-pretrain --epochs 30 --batch_size 64 --lr 0.01 --step_size 10 --gamma 0.5 --weight_decay 1e-5
   ```
   
 模型训练结束后会分别生成 `best_finetune_best.pth` 和 `best_random_best.pth` 两个文件，分别是两种训练策略下保存的模型参数。同时在 `training_plots_finetune` 和 `training_plots_random` 文件夹下会生成相应的训练过程中在训练集和验证集上的 loss 曲线和 accuracy 曲线, 在 `run` 文件夹下会生成对应的 TensorBoard logs.
