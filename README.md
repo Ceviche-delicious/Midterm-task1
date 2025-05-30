@@ -1,4 +1,4 @@
-# 三层神经网络实现 CIFAR-10 图像分类器
+# 微调在ImageNet上预训练的卷积神经网络实现Caltech-101分类
 
 任务描述：
 
@@ -38,98 +38,43 @@ hyper_param_opts = {
 
 ## 3️⃣ 模型训练
 
-* 进入 [`train.py`](train.py) 修改以下超参数设置：
-
-  神经网络结构参数：
-
-  ```python
-  nn_architecture = [
-      {"input_dim": 3072, "output_dim": 1024, "activation": "leakyrelu"},
-      {"input_dim": 1024, "output_dim": 256, "activation": "leakyrelu"},
-      {"input_dim": 256, "output_dim": 10, "activation": "softmax"},
-  ] 
-  ```
-
-  数据加载器参数：
-
-  ```python
-  dataloader_kwargs = {
-      "n_valid": 5000,
-      "batch_size": 256,
-  }  
-  ```
-
-  SGD优化器参数：
-
-  ```python
-  optimizer_kwargs = {
-      "lr": 0.05,
-      "ld": 0.001,
-      "decay_rate": 0.95,
-      "decay_step": 375,
-  }  
-  ```
-
-  训练器参数：
-
-  ```python
-  trainer_kwargs = {
-      "n_epochs": 200,
-      "eval_step": 1,
-  } 
-  ```
-  
-* 进入仓库根目录，运行：
+* 你可以直接运行以下命令开始训练：
 
   ```bash
-  python train.py
+  # 在 Caltech-101 数据集上从零开始训练新的输出层，并对其余参数使用较小的学习率进行微调
+  python train.py --exp best_finetune --epochs 20 --batch_size 64 --lr 0.01 --step_size 10 --gamma 0.5 --weight_decay 1e-5
+  ```
+
+  ```bash
+   # 使用 Caltech-101 数据集从随机初始化的网络参数开始训练
+   python train.py --exp best_random --epochs 30 --batch_size 64 --lr 0.01 --step_size 30 --gamma 0.1 --weight_decay 0.0
   ```
   
-模型训练结束后会生成`models`和`logs`两个文件夹，分别是保存的模型参数和训练的日志文件。仓库根目录中已经保存了五种不同超参数下模型的训练日志，其对应的模型权重可在上面的网盘链接中下载。
+模型训练结束后会分别生成 `best_finetune_best.pth` 和 `best_random_best.pth` 两个文件，分别是两种训练策略下保存的模型参数。同时在 `training_plots_finetune` 和 `training_plots_random` 文件夹下会生成相应的训练过程中在训练集和验证集上的 loss 曲线和accuracy 曲线, 在 `run` 文件夹下会生成对应的 TensorBoard logs.
 
 ## 4️⃣ 模型测试
+* 将模型权重文件下载后放于项目目录下，例如 `best_finetune_best.pth` 和 `best_random_best.pth`.
 
-* 将模型权重文件下载后放于某一目录下，例如`models/`
-
-* 可进入 [`test.py`](test.py) 修改以下部分：
-
-  数据加载器参数：
+* 运行：
 
   ```python
-  dataloaders_kwargs = {
-      "n_valid": 5000,
-      "batch_size": 256,
-  }
+  # 测试预训练微调的模型
+  python test.py --exp best_finetune --batch_size --64
   ```
-
-  模型权重文件的路径：
-
-  ```python
-  ckpt_path = "models/model_epoch_200.pkl"
-  ```
-
-* 进入仓库根目录，运行：
-
-  ```python
-  python test.py
+   ```python
+  # 测试从头开始训练的模型
+  python test.py --exp best_random --batch_size --64
   ```
   程序运行结束后会打印模型在测试集上的损失和正确率
   
-## 5️⃣ 模型网络参数可视化
+## 5️⃣ Tensorboard可视化
 
-* 将模型权重文件下载后放于某一目录下，例如`models/`
+ 
 
-* 可进入 [`visualization.py`](visualization.py) 修改以下部分：
 
-  模型权重文件的路径：
-
-  ```python
-  ckpt_path = "./models/model_epoch_200.pkl"
+  ```bash
+  tensorboard --logdir runs --port 6006
   ```
 
-* 进入仓库根目录，运行：
-
-  ```python
-  python visualization.py
-  ```
-  程序运行结束后生成文件夹`images`，里面有模型网络初始化和训练后各层参数的可视化图片（包括直方图和热力图）
+## ✅ 实验结果
+最终预训练微调模型在 Caltech-101 测试集上达到了**96.33**%的准确率，而从头开始训练的模型达到了**90.23**%的准确率.
